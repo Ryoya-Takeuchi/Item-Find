@@ -18,10 +18,18 @@ import {
 
 import { Container, Header, Content, Form, Item, Input, Label, Button,Text, Icon } from 'native-base';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { useNavigation } from 'react-navigation-hooks';
+import * as Screens from '../../navigations/Screens';
 
 const window = Dimensions.get("window");
 
 const LoginScreen = () => {
+
+	const {navigate} = useNavigation();
+
+	const login = () => {
+		navigate({routeName : 'AuthenticatedNavigation'})
+	}
 
   return (
     <>
@@ -44,7 +52,7 @@ const LoginScreen = () => {
 						<Label>Password</Label>
 						<Input />
 					</Item>
-					<Button rounded full style={styles.login_but}>
+					<Button rounded full style={styles.login_but} onPress={login}>
 						<Text style={{color : "#ffffff"}}>ログインして始める</Text>
 					</Button>
 				</Form>

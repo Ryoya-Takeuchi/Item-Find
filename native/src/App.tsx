@@ -31,7 +31,7 @@ import RoomScreen from './screens/rooms/tree';
 const App =  () => {
 
   return (
-		<RoomScreen/>
+		<AppContainer/>
   );
 };
 
