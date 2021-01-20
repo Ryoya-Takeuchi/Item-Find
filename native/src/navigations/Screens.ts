@@ -12,5 +12,7 @@ export const APPEND_ITEM = 'tk.item_find.native.tree.append_item';
 export const ROOM_TREE = 'tk.item_find.native.tree.room_tree';
 // ツリー配下
 export const ROOM_CHILD_TREE = 'tk.item_find.native.tree.room_child_tree';
+// 商品商品詳細
+export const ROOM_ITEM_INFO = 'tk.item_find.native.tree.room_item_info';
 // 設定画面
 export const SETTING = 'tk.item_find.native.setting'
