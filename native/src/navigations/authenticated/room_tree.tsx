@@ -7,6 +7,7 @@ import * as Screens from '../Screens';
 import RoomTree from '../../screens/rooms/tree';
 import AppendRoom from '../..//screens/rooms/append_room';
 import AppendItem from '../../screens/rooms/append_item';
+import ItemInfo from '../../screens/rooms/item_info';
 
 const headerStyle = {
     backgroundColor: '#7863D3'
@@ -43,6 +44,15 @@ roomTreeContainer[Screens.ROOM_CHILD_TREE] = {
         title: navigation.state.params
             ? navigation.state.params.room_name
             : 'ルーム配下',
+        headerStyle,
+        headerTintColor
+    })
+};
+
+roomTreeContainer[Screens.ROOM_ITEM_INFO] = {
+    screen: ItemInfo,
+    navigationOptions: () => ({
+		title : "",
         headerStyle,
         headerTintColor
     })
