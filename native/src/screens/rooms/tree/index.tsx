@@ -54,7 +54,7 @@ const DATA = [
 		navigation.navigate({
 			routeName : Screens.ROOM_ITEM_INFO,
 			params : {
-				
+				display_name : title
 			}
 		})
 	}
