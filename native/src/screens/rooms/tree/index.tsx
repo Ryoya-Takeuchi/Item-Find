@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-	SafeAreaView,
-	View,
 	Text,
 	SectionList,
 	StyleSheet,
@@ -17,10 +15,28 @@ import {
 import ItemList from '../../../components/ItemList' 
 import * as Screens from '../../../navigations/Screens';
 import SimpleIndicator from '../../../components/SimpleIndicator';
+import Modal from '../../../components/Modal';
 
 export default () => {
+	const [isVisible , setIsVisible] = React.useState<boolean>(false);
 	const uri = "https://source.unsplash.com/1024x768/?nature";
 	const navigation = useNavigation();
+	const appendOnPress = { 
+		item : () => {
+			navigation.navigate({
+				routeName: Screens.APPEND_ITEM,
+				key: 'append_item'
+			});
+			setIsVisible(bool => !bool);
+		},
+		room : () => {
+			navigation.navigate({
+				routeName: Screens.APPEND_ROOM,
+				key: 'append_room'
+			});
+			setIsVisible(bool => !bool);
+		},
+	}
 	const roomId: string = navigation.getParam('room_id')
         ? navigation.getParam('room_id')
 		: 'root';
@@ -86,18 +102,15 @@ const List = () => {
 			{DATA.length === 0 ? <SimpleIndicator /> :  <List/>}
 			<Fab
                 position="bottomRight"
-                onPress={() => {
-                    navigation.navigate({
-                        routeName: Screens.APPEND_ITEM,
-                        key: 'append_item'
-                    });
-                }}
+				onPress={() => { setIsVisible(bool => !bool)}}
+				style={{ backgroundColor: '#7863D3'}}
             >
                 <Icon
-                    type="MaterialCommunityIcons"
-                    name="account-search-outline"
+                    type="Fontisto"
+					name="plus-a"
                 />
             </Fab>
+			<Modal isVisible={isVisible} onPress={appendOnPress} close={() => setIsVisible(false)} />
 		</Container>
 	);
 }
