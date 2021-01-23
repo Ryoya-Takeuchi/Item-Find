@@ -13,7 +13,8 @@ import {
   View,
   Dimensions,
   TouchableHighlight,
-  Image
+  Image,
+  KeyboardAvoidingView
 } from 'react-native';
 
 import { Container, Header, Content, Form, Item, Input, Label, Button,Text, Icon } from 'native-base';
@@ -34,7 +35,7 @@ const LoginScreen = () => {
   return (
     <>
 		{/* <AppContainer /> */}
-		<SafeAreaView style={styles.body}>
+		<KeyboardAvoidingView style={styles.body} behavior="padding">
 			<View style={styles.top}>
 				<View style={{flexDirection : "row" , alignItems : "center"}}>
 					<Image resizeMode='contain' source={require('../../images/enpitsu.png')} style={{transform: [{ rotate: "180deg" }] , width : window.width * 0.05 , height : window.width * 0.15}} />
@@ -64,7 +65,7 @@ const LoginScreen = () => {
 					<Text>から</Text>
 				</View>
 			</View>
-		</SafeAreaView>
+		</KeyboardAvoidingView>
     </>
   );
 };
