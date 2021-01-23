@@ -7,32 +7,19 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
+import { Root } from 'native-base';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppContainer from './navigations/index';
-// import LoginScreen from './screens/login';
-import RoomScreen from './screens/rooms/tree';
 
 const App =  () => {
 
-  return (
-		<AppContainer/>
-  );
+	return (
+		<Root>
+			<SafeAreaProvider>
+				<AppContainer/>
+			</SafeAreaProvider>
+		</Root>
+	);
 };
 
 
