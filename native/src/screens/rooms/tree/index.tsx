@@ -9,18 +9,17 @@ import {
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import {
-	Thumbnail,
-	Icon,
-	Left,
-	Right,
-	List
+	Container,
+	Fab,
+	Icon
 } from 'native-base'
 
 import ItemList from '../../../components/ItemList' 
 import * as Screens from '../../../navigations/Screens';
+import SimpleIndicator from '../../../components/SimpleIndicator';
 
 export default () => {
-	const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
+	const uri = "https://source.unsplash.com/1024x768/?nature";
 	const navigation = useNavigation();
 	const roomId: string = navigation.getParam('room_id')
         ? navigation.getParam('room_id')
@@ -30,21 +29,21 @@ export default () => {
 
 const DATA = [
 	{
-	  title: "１階",
-	  data: ["リビング", "玄関", "トイレ"]
+		title: "１階",
+		data: ["リビング", "玄関", "トイレ"]
 	},
 	{
-	  title: "２階",
-	  data: ["子供部屋", "パパの部屋", "ウォークインクローゼット","キッチン"]
+		title: "２階",
+		data: ["子供部屋", "パパの部屋", "ウォークインクローゼット","キッチン"]
 	},
 	{
-	  title: "３階",
-	  data: ["寝室", "屋根裏部屋", "ベランダ"]
+		title: "３階",
+		data: ["寝室", "屋根裏部屋", "ベランダ"]
 	},
 	{
-	  title: "4階",
-	  data: ["ハサミ"]
-	  },
+		title: "4階",
+		data: ["ハサミ", "コップ", "ペン"]
+	},
   ];
 
 
@@ -68,9 +67,10 @@ const DATA = [
   )
 };
 
+const List = () => {
+
 	return (
-		<SafeAreaView>
-			<SectionList
+		<SectionList
 				sections={DATA}
 				keyExtractor={(item, index) => item + index}
 				renderItem={({ item }) => <Item title={item} />}
@@ -78,7 +78,27 @@ const DATA = [
 						<Text style={styles.header}>{title}</Text>
 				)}
 			/>
-		</SafeAreaView>
+	);
+}
+
+	return (
+		<Container>
+			{DATA.length === 0 ? <SimpleIndicator /> :  <List/>}
+			<Fab
+                position="bottomRight"
+                onPress={() => {
+                    navigation.navigate({
+                        routeName: Screens.APPEND_ITEM,
+                        key: 'append_item'
+                    });
+                }}
+            >
+                <Icon
+                    type="MaterialCommunityIcons"
+                    name="account-search-outline"
+                />
+            </Fab>
+		</Container>
 	);
 }
 
