@@ -2,6 +2,8 @@
 export const ROOM_TREE_CONTAINER =  'tk.item_find.native.tree.container';
 // setting
 export const SETTING_CONTAINER = 'tk.item_find.native.setting.container';
+// append 
+export const APPEND_CONTAINER = 'tk.item_find.native.append.container'
 
 
 // 新規登録(ルーム)
