@@ -8,6 +8,7 @@ import {
 	Thumbnail,
 	Body
 } from 'native-base';
+import ImageThumbnail from '../container/ItemThumbnail';
 
 interface Props {
 	onPress : () => void,
@@ -22,7 +23,7 @@ export default function ItemList(props : Props) {
 	return (
 		<ListItem onPress={() => onPress()}>
 			<Left>
-				<Thumbnail small source={{uri: data.uri}}/>
+				<ImageThumbnail display_name={data.item_name} />
 			</Left>
 			<Body>
 				<Text>{data.item_name}</Text>
