@@ -5,7 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 const AuthNavigation = createStackNavigator(
     {
-        Login: { screen: Login },
+		Login: { screen: Login }
         // Callback: { screen: AuthCallback, path: 'auth/callback'}
     },
     {
@@ -13,5 +13,5 @@ const AuthNavigation = createStackNavigator(
         headerMode: 'none'
     }
 );
-
+ 
 export default AuthNavigation;
