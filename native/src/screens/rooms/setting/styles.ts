@@ -9,6 +9,10 @@ export const styles = StyleSheet.create({
 	singnout_button : {
 		color : "#E88D8D",
 		fontWeight : '900',
+	},
+	current_user_font : {
+		fontWeight : '900',
+		marginLeft : 100
 	}
 	
 })
