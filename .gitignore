@@ -20,6 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+project.xcworkspace
 
 # Android/IntelliJ
 #
@@ -57,4 +58,11 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
-ios/GoogleService-Info.plist
+
+*.p12
+GoogleService-Info.*
+!sample.config.json
+config.json
+trace
+
+native/ios/GoogleService-Info.plist

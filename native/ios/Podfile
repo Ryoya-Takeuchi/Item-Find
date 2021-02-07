@@ -7,6 +7,10 @@ target 'native' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
+ 
+  # add
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'Firebase/Analytics'
 
   target 'nativeTests' do
     inherit! :complete

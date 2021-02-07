@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        // "module": "commonjs",
+        "jsx": "react",
+        "noEmit": true,
+        "moduleResolution": "node",
+        // "allowSyntheticDefaultImports": true,
+        "importHelpers": true,
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["./src/*"],
+            "@config": ["config.json"]
+        },
+        "skipLibCheck": true,
+        "esModuleInterop": true
+    },
+    "include": ["./src/**/*"]
+}
