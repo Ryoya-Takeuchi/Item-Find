@@ -16,6 +16,7 @@ export interface IItem {
 	room_ids : Array<string>,
 	private_ids : "all" | Array<string>,
 	owners : "all" | Array<string>,
+	is_image : boolean,
 	create_at?  : FirebaseFirestoreTypes.Timestamp,
 	update_at? : FirebaseFirestoreTypes.Timestamp,
 };
@@ -25,6 +26,7 @@ const itemDecoder: Decoder<IItem> = object({
     private_ids: array(anyJson()),
     item_name: string(),
 	is_root: boolean(),
+	is_image : boolean(),
 	room_ids : array(anyJson()),
 	owners : array(anyJson())
 });

@@ -16,6 +16,7 @@ export interface IRoom {
 	room_uri? : string,
 	room_ids : Array<string>,
 	room_name : string,
+	is_image : boolean,
 	update_at? : FirebaseFirestoreTypes.Timestamp,
 	create_at? : FirebaseFirestoreTypes.Timestamp,
 }
@@ -23,6 +24,7 @@ export interface IRoom {
 const roomDecoder : Decoder<IRoom> = object({
 	id : string(),
 	is_root : boolean(),
+	is_image : boolean(),
 	room_name : string(),
 	private_ids  :array(anyJson()),
 	room_ids : array(anyJson()),
