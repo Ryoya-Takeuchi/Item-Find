@@ -3,7 +3,7 @@ import {
 	View,
 	StyleSheet,
 	Dimensions,
-	TouchableHighlight
+	TouchableOpacity
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Text, Button, Icon } from 'native-base';
@@ -40,9 +40,9 @@ export default (props : Props) => {
 		<Modal isVisible={isVisible} backdropColor={"#FFFFFF"} style={styles.modal}>
 			<View>
 				<View style={styles.cross_area}>
-					<TouchableHighlight onPress={() => close()}>
+					<TouchableOpacity onPress={() => close()}>
 						<Icon type="Entypo" name="cross" style={{color : "#CE6C6C"}} />
-					</TouchableHighlight>
+					</TouchableOpacity>
 				</View>
 				<View>
 					<Button onPress={onPress.room} iconLeft style={styles.button} >
