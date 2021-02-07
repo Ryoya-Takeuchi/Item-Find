@@ -22,9 +22,7 @@ export default class ItemServiceFromServer extends FromServer implements ItemsSe
 	}
 
 	async getBelongItems( hierarchy : IHierarchy , room : IRoom) {
-		console.log("getBelong",);
 		const items = await this.getAllItems(hierarchy);
-		console.log("items",items);
 		return items.filter((i) => i.room_ids.indexOf(room.id) >=  0)
 	}
 }
