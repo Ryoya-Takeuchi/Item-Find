@@ -3,23 +3,43 @@ import {
 	Text,
 	SectionList,
 	StyleSheet,
-	TouchableHighlight
+	SectionListRenderItem,
+	SectionListRenderItemInfo,
+	View
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import {
 	Container,
 	Fab,
-	Icon
+	Icon,
+	ListItem
 } from 'native-base'
-
+import { ModuleContext } from '../../../contexts/Module';
 import ItemList from '../../../components/ItemList' 
 import * as Screens from '../../../navigations/Screens';
 import SimpleIndicator from '../../../components/SimpleIndicator';
 import Modal from '../../../components/Modal';
+import reducer,{INIT , ADD_SECTION_ITEMS} from './reducer';
+import {IItemOfITemType, IRoomOfITemType, State} from './types';
+import {
+	toIRoomOfItemTypes,
+	toIItemOItemTypes,
+	ItemT,
+	isIItemOfItemType,
+	isIRoomOfItemType,
+	SectionItem
+} from './types';
+;
+
+const initState : State = {
+	section_data : []
+}
 
 export default () => {
 	const [isVisible , setIsVisible] = React.useState<boolean>(false);
+	const {hierarchyService , itemService , roomService} = React.useContext(ModuleContext);
 	const uri = "https://source.unsplash.com/1024x768/?nature";
+	const [state , dispatch] = React.useReducer(reducer , initState);
 	const navigation = useNavigation();
 	const appendOnPress = { 
 		item : () => {
@@ -38,68 +58,128 @@ export default () => {
 		},
 	}
 	const roomId: string = navigation.getParam('room_id')
-        ? navigation.getParam('room_id')
-		: 'root';
-	console.log("roomId",roomId);
+	? navigation.getParam('room_id') : 'root';
 
+	React.useEffect(() => {
+		dispatch({type : INIT})
+		const fn = async() => {
 
-const DATA = [
-	{
-		title: "１階",
-		data: ["リビング", "玄関", "トイレ"]
-	},
-	{
-		title: "２階",
-		data: ["子供部屋", "パパの部屋", "ウォークインクローゼット","キッチン"]
-	},
-	{
-		title: "３階",
-		data: ["寝室", "屋根裏部屋", "ベランダ"]
-	},
-	{
-		title: "4階",
-		data: ["ハサミ", "コップ", "ペン"]
-	},
-  ];
-
-
-  function Item({ title }){
-	
-	const onPress = () => {
-		navigation.navigate({
-			routeName : Screens.ROOM_ITEM_INFO,
-			params : {
-				display_name : title
+			if(roomId  === 'root') {
+				const hierarchys = await hierarchyService.getHierarchys();
+				if(hierarchys == undefined) {return};
+				hierarchys.forEach( async (hierarchy) => {
+					const rootRooms = await roomService.getFindRootRooms(hierarchy);
+					dispatch({
+						type : ADD_SECTION_ITEMS,
+						hierarchy,
+						add_sectionItems  : toIRoomOfItemTypes(rootRooms)
+					});
+				})
+			}else {
+				const hierarchyId : string = navigation.getParam('hierarchy_id');
+				const hierarchy = await hierarchyService.getHierarchy(hierarchyId);
+				const room = await roomService.getRoom(hierarchy , roomId);
+				const childRooms = await roomService.getChildRooms(hierarchy , room);
+				const items = await itemService.getAllItems(hierarchy);
+				dispatch({
+					type : ADD_SECTION_ITEMS,
+					hierarchy,
+					add_sectionItems  : [...toIRoomOfItemTypes(childRooms) , ...toIItemOItemTypes(items)]
+				});
 			}
-		})
+		}
+		fn();
+	},[navigation.state.key])
+
+	const renderRoom = (
+		info : SectionListRenderItemInfo<IRoomOfITemType>
+	) : React.ReactElement => {
+		const {index , item} = info;
+		const onPress = () => {
+			navigation.navigate({
+				routeName : Screens.ROOM_CHILD_TREE,
+				params : {
+					hierarchy_id: info.section.hierarchy.id,
+                    room_id: item.id,
+                    room_name: item.room_name
+				}
+			})
+		};
+		const data= {
+			uri : uri,
+			item_name : item.room_name
+		}
+		  
+		return(
+			<ItemList data={data} onPress={onPress}/>
+		)
+		
 	}
-	const data= {
-		uri : uri,
-		item_name : title
+
+	const renderItem = (
+		info : SectionListRenderItemInfo<IItemOfITemType>
+	) : React.ReactElement => {
+		const {index , item} = info;
+		const onPress = () => {
+			navigation.navigate({
+				routeName : Screens.ROOM_ITEM_INFO,
+				params : {
+					hierarchy_id: info.section.hierarchy.id,
+                    room_id: item.id,
+                    room_name: item.item_name
+				}
+			})
+		};
+		const data= {
+			uri : uri,
+			item_name : item.item_name
+		}
+		  
+		return(
+			<ItemList data={data} onPress={onPress}/>
+		)
+		
 	}
-	  
-	return(
-		<ItemList data={data} onPress={onPress}/>
-  )
+
+
+	const renderItems = (
+		info  : SectionListRenderItem<ItemT>
+		) : React.ReactElement => {
+		if(isIRoomOfItemType(info)) {
+			return renderRoom(info)
+		}
+		
+		if (isIItemOfItemType(info)) {
+			return renderItem(info)
+		}
 };
 
-const List = () => {
+const renderHeder = (
+		info : {section : SectionItem}
+	) : React.ReactElement => {
+	const { section }  = info;
+	return (
+		<ListItem itemDivider>
+			<Text>{section.hierarchy.hierarchy_name}</Text>
+		</ListItem>
+	)
+}
 
+const List = () => {
+	console.log("section_data",state.section_data)
 	return (
 		<SectionList
-				sections={DATA}
-				keyExtractor={(item, index) => item + index}
-				renderItem={({ item }) => <Item title={item} />}
-				renderSectionHeader={({ section: { title } }) => (
-						<Text style={styles.header}>{title}</Text>
-				)}
+				sections={state.section_data}
+				keyExtractor={(item, index) => item.id + index}
+				renderItem={renderItems}
+				renderSectionHeader={renderHeder}
 			/>
 	);
 }
 
 	return (
 		<Container>
-			{DATA.length === 0 ? <SimpleIndicator /> :  <List/>}
+			{state.section_data.length === 0 ? <SimpleIndicator /> :  <List/>}
 			<Fab
                 position="bottomRight"
 				onPress={() => { setIsVisible(bool => !bool)}}
