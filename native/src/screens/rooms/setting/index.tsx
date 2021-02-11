@@ -20,7 +20,11 @@ export default () => {
 				<Text>ユーザ情報</Text>
 			</ListItem>
 			<ListItem>
-				<ItemThumbnail display_name={''} />
+				<ItemThumbnail
+					display_name={''}
+					type={'thumbnails'}
+					uid={''}
+					/>
 				<Text style={styles.current_user_font}>{'田中　太郎'}</Text>
 			</ListItem>
 			<ListItem itemDivider style={styles.itemDivider}>

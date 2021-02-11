@@ -243,6 +243,9 @@ PODS:
   - Firebase/Firestore (7.4.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 7.4.0)
+  - Firebase/Storage (7.4.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 7.4.0)
   - FirebaseAnalytics (7.4.0):
     - FirebaseCore (~> 7.0)
     - FirebaseInstallations (~> 7.0)
@@ -283,6 +286,9 @@ PODS:
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
+  - FirebaseStorage (7.4.0):
+    - FirebaseCore (~> 7.0)
+    - GTMSessionFetcher/Core (~> 1.4)
   - Flipper (0.54.0):
     - Flipper-Folly (~> 2.2)
     - Flipper-RSocket (~> 1.1)
@@ -631,6 +637,8 @@ PODS:
     - React-jsi (= 0.63.4)
   - RNCMaskedView (0.1.10):
     - React
+  - RNDeviceInfo (8.0.1):
+    - React-Core
   - RNFBApp (10.5.0):
     - Firebase/CoreOnly (~> 7.4.0)
     - React-Core
@@ -642,6 +650,12 @@ PODS:
     - Firebase/Firestore (~> 7.4.0)
     - React-Core
     - RNFBApp
+  - RNFBStorage (10.6.4):
+    - Firebase/Storage (~> 7.4.0)
+    - React-Core
+    - RNFBApp
+  - RNFS (2.16.6):
+    - React
   - RNGestureHandler (1.9.0):
     - React-Core
   - RNReanimated (1.13.2):
@@ -704,9 +718,12 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
+  - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -727,6 +744,7 @@ SPEC REPOS:
     - FirebaseCoreDiagnostics
     - FirebaseFirestore
     - FirebaseInstallations
+    - FirebaseStorage
     - Flipper
     - Flipper-DoubleConversion
     - Flipper-Folly
@@ -801,12 +819,18 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
     :path: "../node_modules/@react-native-firebase/auth"
   RNFBFirestore:
     :path: "../node_modules/@react-native-firebase/firestore"
+  RNFBStorage:
+    :path: "../node_modules/@react-native-firebase/storage"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -834,6 +858,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 3770093ac4f2be4590fa03cfa1d3a6e5602d4557
   FirebaseFirestore: ab4e4d98aea35b4af696a96554769903123f83cc
   FirebaseInstallations: 30646fc9a61c6f4ee3cd7a8b7231721842b40c95
+  FirebaseStorage: e8726dfe21ebe068ccbe8e9c332ea90688eeadae
   Flipper: be611d4b742d8c87fbae2ca5f44603a02539e365
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: e4493b013c02d9347d5e0cb4d128680239f6c78a
@@ -875,9 +900,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
+  RNDeviceInfo: 54401b60514387f9120ab8265be5ed9103d842b9
   RNFBApp: 43a062dc6a1a88edd934d2229d1ba64f25381598
   RNFBAuth: b5b1ba3df98f23b1f41829b762477ccb60b0e747
   RNFBFirestore: b596de5f7cb73ec799cf0eb24db5be69540be25f
+  RNFBStorage: 4dd46b16b68f387f780b7bc1b91b2dada7124ea2
+  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198

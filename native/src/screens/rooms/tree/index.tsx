@@ -107,9 +107,9 @@ export default () => {
 		};
 		const data= {
 			uri : uri,
-			item_name : item.room_name
-		}
-		  
+			item_name : item.room_name,
+			item : item
+		};
 		return(
 			<ItemList data={data} onPress={onPress}/>
 		)
@@ -132,9 +132,9 @@ export default () => {
 		};
 		const data= {
 			uri : uri,
-			item_name : item.item_name
-		}
-		  
+			item_name : item.item_name,
+			item : item
+		};
 		return(
 			<ItemList data={data} onPress={onPress}/>
 		)
