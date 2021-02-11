@@ -8,11 +8,13 @@ import {
     DecoderError
 } from '@mojotech/json-type-validation';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import {TFileExtension} from '../../hooks/useCloudImage';
 export interface IRoom {
 	id : string,
 	is_root : boolean,
 	order_by? : number,
 	private_ids : Array<string>,
+	image_exetensions : TFileExtension[]
 	room_uri? : string,
 	room_ids : Array<string>,
 	room_name : string,
@@ -28,6 +30,7 @@ const roomDecoder : Decoder<IRoom> = object({
 	room_name : string(),
 	private_ids  :array(anyJson()),
 	room_ids : array(anyJson()),
+	image_exetensions : array(anyJson())
 })
 
 

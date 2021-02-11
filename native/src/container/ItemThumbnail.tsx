@@ -1,19 +1,32 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Thumbnail } from 'native-base';
+import useCloudImage,{refType,TFileExtension} from '../modules/hooks/useCloudImage';
+import storage from '@react-native-firebase/storage';
 
 interface Props {
 	display_name : string,
-	imageUri? : string,
+	isImage? : boolean,
 	size? : 'small' | 'large',
+	uid : string,
+	type : refType,
+	imageExetensions : TFileExtension[]
 }
 
 export default (props : Props) => {
-	const {display_name , imageUri, size } = props;
+	const {display_name , isImage = false, size , uid, type, imageExetensions} = props;
+	const [image , setImage] = React.useState('');
+	const cloudImage = useCloudImage(uid , type, imageExetensions);
 
-	if(imageUri) {
+	React.useEffect(() => {
+		if(isImage) {
+			cloudImage.run()
+		}
+	},[])
+
+	if(isImage && cloudImage.state == 'done') {
 		return (
-			<Thumbnail small source={{uri: imageUri}}/>
+			<Thumbnail source={{uri: cloudImage.images[0]}}/>
 		);
 	};
 	
@@ -28,9 +41,7 @@ export default (props : Props) => {
 			borderRadius : thumbnailSize / 2,
 			backgroundColor : createColor()
 			
-		}}>
-			{/* <Text>{display_name}</Text> */}
-		</View>
+		}}/>
 	);
 
 }
