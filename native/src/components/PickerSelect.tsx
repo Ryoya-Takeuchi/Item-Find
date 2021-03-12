@@ -1,7 +1,5 @@
 import * as React from 'react';
-import RNPickerSelect from 'react-native-picker-select';
-import { StyleSheet } from 'react-native';
-import {Icon} from 'native-base';
+import { Icon, Picker } from "native-base";
 
 interface item {
 	label : string,
@@ -10,30 +8,25 @@ interface item {
 
 interface Props {
 	items : item[],
-	setValue  : (value) => void
-}5
-
-export default function PickerSelect(props : Props) {
-	const {items , setValue} = props
-
-	return (
-		<RNPickerSelect
-            onValueChange={(value) => setValue(value)}
-			items={items}
-			placeholder={{ label: '選択してください', value: '' }}
-			style={pickerSelectStyles}
-			Icon={() => <Icon name="chevron-down" color="gray" />}
-         />
-	);
+	onChange?  : (value, type) => void,
+	value? : string,
+	placeholder? : string,
+	type : string
 }
 
-const pickerSelectStyles = StyleSheet.create({
-	inputIOS: {
-	  borderColor: '#8E8C8C',
-	  marginLeft: 20,
-	  marginRight: 30,
-	  marginBottom: 10,
-	  padding: 5,
-	  paddingRight: 20,
-	},
-  });
+export default function PickerSelect(props : Props) {
+	const {items , onChange , value , placeholder, type} = props
+
+	return (
+		<Picker
+			mode="dropdown"
+			iosHeader="所有者選択"
+			iosIcon={<Icon name="chevron-down" />}
+			placeholder={placeholder}
+			selectedValue={value}
+			onValueChange={(value) => onChange(value,type)}
+		>
+			{items.map((item) => <Picker.Item label={item.label} value={item.value} />)}
+		</Picker>
+		);
+}
