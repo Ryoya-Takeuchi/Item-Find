@@ -26,6 +26,7 @@ export interface IItem {
 		label : string,
 		url : string
 	},
+	money? : string
 };
 
 const itemDecoder: Decoder<IItem> = object({
