@@ -6,7 +6,9 @@ const data = {
 	name: 'Los Angeles',
 	state: 'CA',
 	country: 'USA'
-  };
+};
+
+export let familyCode : string;
 
 //   var database = firebase.database();
 export const  getData = async() => {
@@ -22,7 +24,9 @@ export const  getData = async() => {
 export const getCollectionGroup = async(uid : string) => {
 	const snapshot = firestore().collectionGroup("list").get();
 	// .where('uid' , '==' , uid).get();
+	const user = (await snapshot).docs[0].data();
 	console.log((await snapshot).docs[0].data());
+	familyCode = user.family_id;
 	// const user = (await snapshot).docs[0].data();
 	// console.log("get",user);
 }

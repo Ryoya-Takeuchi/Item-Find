@@ -8,6 +8,7 @@ import RoomTree from '../../screens/rooms/tree';
 import AppendRoom from '../..//screens/rooms/append_room';
 import AppendItem from '../../screens/rooms/append_item';
 import ItemInfo from '../../screens/rooms/item_info';
+import CloudRegister from '../../screens/rooms/cloud_register';
 
 const headerStyle = {
     backgroundColor: '#7863D3'
@@ -73,6 +74,15 @@ roomTreeContainer[Screens.APPEND_ITEM] = {
 		title : '新規登録(商品)',
 		headerStyle,
         headerTintColor
+	})
+}
+
+roomTreeContainer[Screens.CLOUD_REGISTER] = {
+	screen : CloudRegister,
+	navigationOptions : () => ({
+		title : '新規登録',
+		headerStyle,
+        headerTintColor,
 	})
 }
 

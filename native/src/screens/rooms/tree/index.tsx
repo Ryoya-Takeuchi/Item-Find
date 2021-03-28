@@ -45,14 +45,17 @@ export default () => {
 		item : () => {
 			navigation.navigate({
 				routeName: Screens.APPEND_ITEM,
-				key: 'append_item'
+				key: 'append_item',
+				params : {
+					type :  'item'
+				}
 			});
 			setIsVisible(bool => !bool);
 		},
 		room : () => {
 			navigation.navigate({
 				routeName: Screens.APPEND_ROOM,
-				key: 'append_room'
+				key: 'append_room',
 			});
 			setIsVisible(bool => !bool);
 		},
@@ -166,7 +169,6 @@ const renderHeder = (
 }
 
 const List = () => {
-	console.log("section_data",state.section_data)
 	return (
 		<SectionList
 				sections={state.section_data}

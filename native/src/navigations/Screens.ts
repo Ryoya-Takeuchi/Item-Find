@@ -18,3 +18,5 @@ export const ROOM_CHILD_TREE = 'tk.item_find.native.tree.room_child_tree';
 export const ROOM_ITEM_INFO = 'tk.item_find.native.tree.room_item_info';
 // 設定画面
 export const SETTING = 'tk.item_find.native.setting'
+//　firebaseにitem,room新規登録する
+export const CLOUD_REGISTER = 'tk.item_find.native.tree.cloud_register'

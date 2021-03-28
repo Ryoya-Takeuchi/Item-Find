@@ -6,7 +6,7 @@ import * as DeviceInfo from 'react-native-device-info';
 
 type State =  'start' | 'done' | 'error';
 export type refType = 'rooms' | 'items' | 'thumbnails'
-export type TFileExtension = 'jpeg' | 'png';
+export type TFileExtension = 'jpeg' | 'png' | undefined;
 
 namespace fileExtension {
 	export const jpeg = 'jpg';
@@ -14,60 +14,59 @@ namespace fileExtension {
 }
 
 
-export default function useCloudImage(uuid : string , type : refType, fileExtensions : TFileExtension[]) {
+function checkFirebaseStorageURL(url: string) {
+    return /^gs:\/\/.*/.test(url);
+}
+
+export default function useCloudImage(uuid : string , type : refType, imgUrls : string[] | null) {
 	const [images , setImages] = React.useState<string[]>(undefined);
 	const [state , setState] = React.useState<State>(undefined);
 
 	const run = React.useCallback(async() => {
-		
 		async function process() {
-			let stat: RNFS.StatResult;
-			try {
-				const base64images = await Promise.all(
-					fileExtensions.map(async (fileExtension,index) => {
-						const filePath = `${RNFS.CachesDirectoryPath}/${DeviceInfo.getBundleId()}/${uuid}${index}.png`;
-						const stat = await RNFS.stat(filePath);
-						if(stat.isFile()) {
-							const encodedData = await RNFS.readFile(await filePath, 'base64');
-							return `data:image/png;base64,${encodedData}`;
+			const images = await Promise.all(
+				imgUrls.map(async(imgUrl) => {
+					let stat : RNFS.StatResult
+					
+					if(!checkFirebaseStorageURL(imgUrl)) {
+						return;
+					}
+					const ref = storage().refFromURL(imgUrl);
+					const metadata =await ref.getMetadata();
+					const fileExtension = metadata.contentType.match(/(gif|jpe?g|png)$/i)[0];
+					console.log("fileExtension",fileExtension)
+					const fileName = await ref.fullPath.split('/')[4];
+					const filePath = `${RNFS.CachesDirectoryPath}/${DeviceInfo.getBundleId()}/${uuid}${fileName}`;
+					try {
+						stat = await RNFS.stat(filePath);
+						if( new Date(stat.mtime).getTime() < new Date(metadata.updated).getTime() ) {
+							throw new Error("file is update")
 						}
-					})
-				)
-				setImages(base64images);
-			} catch (error) {
-				const ref = await storage().ref('0ox1deWark6YVFRSwLJS');
-				const listRef = ref.child(`images/${type}/${uuid}`);
-				const list = await listRef.listAll();
-				const imageUris = await Promise.all(
-					list.items.map(async(itemRef) => {
-						return storage().ref(itemRef.fullPath).getDownloadURL();
-					})
-				);
-				const filePaths = imageUris.map(async(imageUri , index) => {
-					const dir = `${
-						RNFS.CachesDirectoryPath
-					}/${DeviceInfo.getBundleId()}`;
-					// ${DeviceInfo.getBundleId()}/images/${type}/${index}
-					await RNFS.mkdir(dir);
-					const filePath = `${RNFS.CachesDirectoryPath}/${DeviceInfo.getBundleId()}/${uuid}${index}.png`;
-					// /${DeviceInfo.getBundleId()}/images/${type}/${index}/${uuid}.png`;
-					// /${DeviceInfo.getBundleId()}/images/${type}/${index}/${uuid}.png`;
-					const process = RNFS.downloadFile({
-						fromUrl: imageUri,
-						toFile: filePath
-					});
-					await process.promise;
-					stat = await RNFS.stat(filePath);
-					return filePath;
-				});
-				const base64Images = await Promise.all(
-					filePaths.map(async(filePath) => {
+
+					} catch (error) {
+						const downloadUrl = await ref.getDownloadURL();
+						const dir = `${
+							RNFS.CachesDirectoryPath
+						}/${DeviceInfo.getBundleId()}/${ref.parent.fullPath}/${fileExtension}`;
+						console.log("dir",dir)
+						// ${DeviceInfo.getBundleId()}/images/${type}/${index}
+						await RNFS.mkdir(dir);
+						const process = RNFS.downloadFile({
+							fromUrl: downloadUrl,
+							toFile: filePath
+						});
+						await process.promise;
+						stat = await RNFS.stat(filePath);
+						return filePath;
+					}
+				
+					if(stat.isFile()) {
 						const encodedData = await RNFS.readFile(await filePath, 'base64');
 						return `data:image/png;base64,${encodedData}`;
-					})
-				);
-				setImages(base64Images);
-			}
+					}
+				})
+			)
+			setImages(images);
 		}
 
 		setState('start');
