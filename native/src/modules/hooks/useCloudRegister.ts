@@ -1,5 +1,5 @@
 import * as React from 'react';
-import firestore from '@react-native-firebase/firestore';
+import firestore,{FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {IItem} from '../../modules/models/entities/Item'
 
 type State = 'start' | 'done' | 'error' | 'init';
@@ -12,7 +12,7 @@ export default function useCloudRegister(familyCode : string) {
 	const itemRegister = React.useCallback(async(hierarchyId : string,item : IItem) => {
 		try {
 			const res = await firestore()
-			.collection('home')
+			.collection('test')
 			.doc(familyCode)
 			.collection('hierarchys')
 			.doc(hierarchyId)
@@ -26,8 +26,9 @@ export default function useCloudRegister(familyCode : string) {
 			.update({
 				...item, id : res.id
 			})
-			return res.id
+			return {itemID : res.id}
 		} catch (error) {
+			console.log(error.message)
 			return new Error('登録処理でエラーが発生しました。')
 		}
 		
