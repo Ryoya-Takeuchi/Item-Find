@@ -1,11 +1,12 @@
 import * as React from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {IHierarchy} from '../models/entities/Hierarchy';
-import {IRoom} from '../models/entities/Room';
+import { IRoom } from '../models/entities/Room';
 
 interface IHook {
 	getAllRoom : () => void,
-	roomList : IFormTemp[]
+	roomList : IFormTemp[],
+	getRoom : (roomId) => void
 }
 
 export interface IFamily {
@@ -18,6 +19,8 @@ export interface IFamily {
 	nick_name : string
 };
 
+
+
 interface IFormTemp {
 	label : string,
 	value : string
@@ -27,7 +30,7 @@ export default function useRooms(familyCode : string) : IHook {
 	const [roomList , setRoomList] = React.useState<IFormTemp[]>([]);
 
 	const getAllRoom = React.useCallback(() => {
-		async function process() {
+		async function process() { 
 			const ref = await firestore().collection('home').doc(familyCode).collection('hierarchys');
 			const snapshot = await ref.get();
 			const hierarchys = await Promise.all(
@@ -49,10 +52,34 @@ export default function useRooms(familyCode : string) : IHook {
 		.then((result) => {
 			setRoomList(result);
 		})
-	},[roomList])
+	},[roomList]);
+
+	const getRoom = React.useCallback((roomId : string) => {
+		const process = async() => {
+			const doc = await firestore().collectionGroup('rooms').get();
+			const snapshot = doc.docs.filter((snapshot) => (snapshot.data()).id ==  roomId);
+			const refs = await snapshot[0].ref.path.split('/');
+			const targetIndex = refs.indexOf('hierarchys');
+			const historyId = refs[targetIndex  + 1];
+			console.log("historyId",historyId);
+
+		}
+
+		process()
+		.then(() => {
+
+		})
+		.catch(() => {
+
+		})
+
+	},[roomList]);
+
+	
 
 	return{
 		getAllRoom,
-		roomList
+		roomList,
+		getRoom
 	}
 }
