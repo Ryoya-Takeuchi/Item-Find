@@ -6,25 +6,25 @@ import storage from '@react-native-firebase/storage';
 
 interface Props {
 	display_name : string,
-	isImage? : boolean,
 	size? : 'small' | 'large',
 	uid : string,
 	type : refType,
-	imageExetensions : TFileExtension[]
+	imgRefFromURLs ? : string[]
 }
 
 export default (props : Props) => {
-	const {display_name , isImage = false, size , uid, type, imageExetensions} = props;
+	const {display_name , size , uid, type, imgRefFromURLs} = props;
 	const [image , setImage] = React.useState('');
-	const cloudImage = useCloudImage(uid , type, imageExetensions);
+	console.log(imgRefFromURLs);
+	const cloudImage = useCloudImage(uid , type, imgRefFromURLs);
 
 	React.useEffect(() => {
-		if(isImage) {
+		if(imgRefFromURLs) {
 			cloudImage.run()
 		}
 	},[])
 
-	if(isImage && cloudImage.state == 'done') {
+	if(imgRefFromURLs && cloudImage.state == 'done') {
 		return (
 			<Thumbnail source={{uri: cloudImage.images[0]}}/>
 		);

@@ -17,7 +17,8 @@ export interface IItem {
 	room_ids : Array<string>,
 	private_ids : "all" | Array<string>,
 	owners : "all" | Array<string>,
-	image_exetensions : TFileExtension[]
+	image_exetensions? : TFileExtension[]
+	img_refFromURLs? : string[] | undefined[]
 	is_image : boolean,
 	create_at?  : FirebaseFirestoreTypes.Timestamp,
 	update_at? : FirebaseFirestoreTypes.Timestamp,

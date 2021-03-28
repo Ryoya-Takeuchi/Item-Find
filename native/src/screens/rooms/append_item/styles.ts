@@ -8,7 +8,9 @@ const styles =  StyleSheet.create({
 	photo_area : {
 		flex : 1,
 		backgroundColor : "#E2E2E2",
-		flexDirection : "row"
+		flexDirection : "row",
+		alignItems : 'center',
+		justifyContent : 'space-around',
 	},
 	form_area : {
 		flex : 5,

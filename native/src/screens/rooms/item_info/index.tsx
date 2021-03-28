@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { View , Text , SafeAreaView,TouchableHighlight} from 'react-native';
 import {List , ListItem, Left, Body, Right} from 'native-base';
+import firestore from '@react-native-firebase/firestore';
 import * as moment from 'moment';
 import { useNavigation } from 'react-navigation-hooks';
 import * as utiles from '../../../modules/utiles';
-import useCloudImage from '../../../modules/hooks/useCloudImage';
 import {ModuleContext} from '../../../contexts/Module';
 import SimpleIndicator from '../../../components/SimpleIndicator';
 import ImageSliderBox from '../../../container/ImageSliderBox';
@@ -28,16 +28,13 @@ export default () => {
 			const items = await itemService.getAllItems(hierarchy);
 			// fixed itemService.getItemがうまく挙動しない
 			const item = items.find((item) => item.id === itemId);
+			
 			setItem(item);
 		}
 		fn();
-	},[
-		navigation,
-		item,
-		hierarchyId,
-		itemId,
-		roomName
-	])
+	},[])
+
+	
 
 
 	const onPress = () => {
@@ -45,6 +42,8 @@ export default () => {
 	}
 
 	if (item == undefined) return <SimpleIndicator />
+
+	console.log("item",item)
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -55,7 +54,8 @@ export default () => {
 				<View style={styles.image_area}>
 					<ImageSliderBox
 						uid={item.id}
-						isImage={item.is_image}/>
+						type={'items'}
+						img_refFromURLs={item.img_refFromURLs}/>
 				</View>
 				<View style={styles.item_info_area}>
 					<List>

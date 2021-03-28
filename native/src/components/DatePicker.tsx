@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import {DatePicker} from 'native-base';
 import DatePicker from 'react-native-datepicker'
 
 interface Props {
@@ -15,9 +14,8 @@ const defPlaceHolderText = '購入日を選択してください。';
 
 export default (props : Props) => {
 	const {selectDate,onDateChange,placeHolderText=defPlaceHolderText,textStyle=defTextColor,disabled=false} = props;
-	console.log(selectDate.getFullYear() + " " + (selectDate.getMonth()+1) + " " + selectDate.getDate());
-
 	return (
+
 		<DatePicker
 		// defaultDate={new Date(2021,3,11)}
 		// defaultDate={new Date(selectDate.getFullYear(),selectDate.getMonth()+1,selectDate.getDate())}

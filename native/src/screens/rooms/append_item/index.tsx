@@ -15,14 +15,13 @@ import PickerSelect from '../../../components/PickerSelect';
 import DatePicker from '../../../components/DatePicker';
 // import useItemAppendForm from '../../../modules/hooks/useItemAppendForm';
 import useValidation,{TFromDateProps} from '../../../modules/hooks/useValidation';
-import useCloudRegister from '../../../modules/hooks/useCloudRegister';
-import useFamilys from '../../../modules/hooks/useFamilyList';
-import useRooms from '../../../modules/hooks/useRooms';
+import useFamilys from '../../../modules/hooks/useForSelectFamilys';
+import useRooms from '../../../modules/hooks/useForSelectRooms';
 import {familyCode} from '../../../modules/firebase/app';
 import PhotoImage from '../../../components/PhotoImage';
 import { useNavigation } from 'react-navigation-hooks';
-import {IItem} from '../../../modules/models/entities/Item';
 import Checkbox from '../../../components/Checkbox';
+import * as Screens from '../../../navigations/Screens';
 
 export default () => {
 	const [values , setValues] = React.useState<TFromDateProps>({
@@ -34,19 +33,39 @@ export default () => {
 		private_ids : 'all',
 		private : false,
 		public : true,
-		buy_date : firestore.Timestamp.fromDate(new Date())
+		buy_date : firestore.Timestamp.fromDate(new Date()),
+		image_exetensions : [undefined,undefined,undefined,undefined]
 	});
-	const {requiredValidation,itemError,numberValidation} = useValidation();
+	const {requiredValidation,itemError,numberValidation,itemValidation,status} = useValidation();
 	const {getAllFamilys,familyList} = useFamilys(familyCode);
 	const {getAllRoom,roomList} = useRooms(familyCode);
-	const {itemRegister} = useCloudRegister(familyCode)
+	const {navigate} = useNavigation();
 
 
 	React.useEffect(() => {
 		// FIXME 正直いらないと思うがテストしやすい
 		getAllFamilys();
 		getAllRoom();
-	},[])
+	},[]);
+
+	React.useEffect(() => {
+		console.log(status);
+		if (status == 'done') {
+			navigate({
+				routeName: Screens.CLOUD_REGISTER,
+				key: 'cloud_register',
+				params : {
+					type :  'items',
+					values
+				}
+			});
+
+		}else if(status == 'error') {
+
+		}
+	},[status])
+
+
 
 	const onDateChange = (selectDate : string) => {
 		const dateObj = {['buy_date'] : firestore.Timestamp.fromDate(new Date(selectDate))};
@@ -89,15 +108,32 @@ export default () => {
 	}
 
 	const submit = () => {
-		console.log("values",values);
-		itemRegister("E7ZPPyUkL4kcduniX3NT",values);
+		itemValidation(values);
+		// itemRegister("E7ZPPyUkL4kcduniX3NT",values);
+	}
+
+	const setImage = (index : number,imageUri : string) => {
+		values.image_exetensions[index] = imageUri as any;
+		setValues({...values , image_exetensions : values.image_exetensions});
+	}
+
+	const imageUnSet  = (index : number) => {
+		values.image_exetensions[index] = undefined;
+		setValues({...values , image_exetensions : values.image_exetensions})
 	}
 
 	return (
 		// <itemAppendForm.ItemForm/>
 		<View style={styles.wrap_area}>
 			<View style={styles.photo_area}>
-			{[1,2,3,4].map((values , index) => <PhotoImage photoNumber={index}/>)}
+				{values.image_exetensions.map((value , index) => 
+					<PhotoImage
+						cloudImageUrl={values.image_exetensions[index]}
+						photoNumber={index}
+						setValue={setImage}
+						index={index}
+						imageUnSet={imageUnSet}/>
+				)}
 			</View>
 			<View style={styles.form_area}>
 				<ScrollView>

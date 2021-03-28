@@ -47,7 +47,6 @@ const mergeSectionItems = (
         })
         // 並び順
 		.sort((a, b) => (a.order_by > b.order_by ? 1 : -1));
-	console.log("findHierarchySecItem",findHierarchySecItem);
     return prev.sort((a, b) => {
         if (a.domain.order_by == null) return 0;
         if (b.domain.order_by == null) return 0;

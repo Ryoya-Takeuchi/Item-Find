@@ -14,7 +14,8 @@ export interface IRoom {
 	is_root : boolean,
 	order_by? : number,
 	private_ids : Array<string>,
-	image_exetensions : TFileExtension[]
+	image_exetensions? : TFileExtension[],
+	img_refFromURLs? : string[] | undefined[]
 	room_uri? : string,
 	room_ids : Array<string>,
 	room_name : string,

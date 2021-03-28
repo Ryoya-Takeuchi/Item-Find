@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {IItem} from '../models/entities/Item';
 
-export type TFromDateProps = Pick<IItem,'item_name'|'owners'|'room_ids'|'money'|'buy_shop'|'private_ids'|'buy_date'> & {private : boolean,public : boolean};
+export type TFromDateProps = Partial<Pick<IItem,'item_name'|'owners'|'room_ids'|'money'|'buy_shop'|'private_ids'|'buy_date' | 'image_exetensions'> & {private : boolean,public : boolean}>;
 export interface TFromErrorProps {
 	item_name : IError,
 	owners : IError,
@@ -32,9 +32,14 @@ interface UseValidation {
 	requiredValidation : (value : string , type : string) => void,
 	itemError : TFromErrorProps,
 	numberValidation: (value : string , type : string) => void,
+	itemValidation : (item : TFromDateProps) => void,
+	status : Status
 }
 
+type Status = 'init' | 'validating' | 'done' | 'error';
+
 export default function useValidation() : UseValidation {
+	const [ status , setStatus ] = React.useState<Status>(undefined);
 	const [itemError , setItemError] = React.useState<TFromErrorProps>({
 		item_name : CError,
 		owners : CError,
@@ -43,6 +48,22 @@ export default function useValidation() : UseValidation {
 		buy_shop : CError,
 		private_ids : CError
 	});
+
+	const itemValidation = React.useCallback((item : TFromDateProps) => {
+		async function logic() {
+			
+		}
+		
+		setStatus('validating');
+		logic()
+		.then(() => {
+			setStatus('done')
+		})
+		.catch(() => {
+
+		})
+
+	},[itemError]);
 
 	
 
@@ -66,6 +87,8 @@ export default function useValidation() : UseValidation {
 	return {
 		requiredValidation,
 		itemError,
-		numberValidation
+		numberValidation,
+		itemValidation,
+		status
 	}
 }

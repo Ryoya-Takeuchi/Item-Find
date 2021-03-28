@@ -6,30 +6,31 @@ import {View , Dimensions} from 'react-native';
 
 interface Props {
 	uid : string,
-	isImage? : boolean
+	type : 'items' | 'rooms'
+	img_refFromURLs? : string[]
 }
 
 export default (props : Props) => {
-	const {uid, isImage=false } = props;
+	const {uid,img_refFromURLs, type } = props;
 	Dimensions.get('window').width; // Window width
-	const cloudImage = useCloudImage(uid , 'items');
+	const cloudImage = useCloudImage(uid , type, img_refFromURLs);
+
+	
 
 	React.useEffect(() => {
-		if(isImage) {
+		if(img_refFromURLs) {
 			cloudImage.run();
 		}
-	},[uid]);
+	},[]);
 	
 
 	if(cloudImage.images == undefined) {
 		return(
-			<View style={{flex : 1 , backgroundColor : "#eee"}}>
-
+			<View style={{flex : 1 , backgroundColor : "#red"}}>
+				
 			</View>
 		);
 	}
-
-	console.log("not undefined",cloudImage.images);
 
 	return (
 			<SliderBox
@@ -41,9 +42,5 @@ export default (props : Props) => {
 				inactiveDotColor="#90A4AE"
 				/>
 	);
-
-	// return (
-	// 	<SliderBox images={cloudImage.images} />
-	// );
 
 }

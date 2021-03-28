@@ -30,8 +30,7 @@ export default function ItemList(props : Props) {
 					display_name={data.item_name}
 					type={data.item.item_type == 'room' ? 'rooms' : 'items'}
 					uid={data.item.id}
-					isImage={data.item.is_image}
-					imageExetensions={data.item.image_exetensions}
+					imgRefFromURLs={data.item.img_refFromURLs}
 					/>
 			</Left>
 			<Body>
