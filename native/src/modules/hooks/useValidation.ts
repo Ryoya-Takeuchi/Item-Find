@@ -1,94 +1,157 @@
-import * as React from 'react';
-import {IItem} from '../models/entities/Item';
+import * as React from "react";
+import { IItem } from "../models/entities/Item";
+import { IRoom } from "../models/entities/Room";
 
-export type TFromDateProps = Partial<Pick<IItem,'item_name'|'owners'|'room_ids'|'money'|'buy_shop'|'private_ids'|'buy_date' | 'image_exetensions'> & {private : boolean,public : boolean}>;
+export type TFromDateProps = Partial<
+  Pick<
+    IItem,
+    | "item_name"
+    | "owners"
+    | "room_ids"
+    | "money"
+    | "buy_shop"
+    | "private_ids"
+    | "buy_date"
+    | "image_exetensions"
+  > & { private: boolean; public: boolean }
+>;
 export interface TFromErrorProps {
-	item_name : IError,
-	owners : IError,
-	room_ids : IError,
-	money : IError,
-	buy_shop : IError,
-	private_ids : IError
+  item_name: IError;
+  owners: IError;
+  room_ids: IError;
+  money: IError;
+  buy_shop: IError;
+  private_ids: IError;
+}
+
+export type TFormRoomProps = Partial<
+  Pick<
+    IRoom,
+    | "room_name"
+    | "is_root"
+    | "private_ids"
+    | "image_exetensions"
+    | "img_refFromURLs"
+  > & {
+    hierarchy_id: string;
+    parentRoom_id: string;
+    isPrivate: boolean;
+    isPublic: boolean;
+  }
+>;
+export interface TFormErrorProps {
+  room_name: IError;
+  is_root: IError;
+  private_ids: IError;
+  image_exetensions: IError;
+  img_refFromURLs;
+  hierarchy_id: IError;
+  parentRoom_id: IError;
 }
 interface IError {
-	message : string,
-	isError : boolean
+  message: string;
+  isError: boolean;
 }
 const CError = {
-	message : '',
-	isError : false
-}
+  message: "",
+  isError: false,
+};
 
 enum errorMessageEnum {
-	item_name = '商品名',
-	owners = '所有者',
-	room_ids = '階層又はルーム',
-	money = '商品購入費',
-	buy_shop = '商品購入先',
-	private_ids = '公開範囲'
-} 
-
-interface UseValidation {
-	requiredValidation : (value : string , type : string) => void,
-	itemError : TFromErrorProps,
-	numberValidation: (value : string , type : string) => void,
-	itemValidation : (item : TFromDateProps) => void,
-	status : Status
+  item_name = "商品名",
+  owners = "所有者",
+  room_ids = "階層又はルーム",
+  money = "商品購入費",
+  buy_shop = "商品購入先",
+  private_ids = "公開範囲",
 }
 
-type Status = 'init' | 'validating' | 'done' | 'error';
+interface UseValidation {
+  requiredValidation: (value: string, type: string) => void;
+  itemError: TFromErrorProps;
+  numberValidation: (value: string, type: string) => void;
+  itemValidation: (item: TFromDateProps) => void;
+  roomValidation: (room: TFormRoomProps) => void;
+  status: Status;
+}
 
-export default function useValidation() : UseValidation {
-	const [ status , setStatus ] = React.useState<Status>(undefined);
-	const [itemError , setItemError] = React.useState<TFromErrorProps>({
-		item_name : CError,
-		owners : CError,
-		room_ids : CError,
-		money : CError,
-		buy_shop : CError,
-		private_ids : CError
-	});
+type Status = "init" | "validating" | "done" | "error";
 
-	const itemValidation = React.useCallback((item : TFromDateProps) => {
-		async function logic() {
-			
-		}
-		
-		setStatus('validating');
-		logic()
-		.then(() => {
-			setStatus('done')
-		})
-		.catch(() => {
+export default function useValidation(): UseValidation {
+  const [status, setStatus] = React.useState<Status>(undefined);
+  const [itemError, setItemError] = React.useState<TFromErrorProps>({
+    item_name: CError,
+    owners: CError,
+    room_ids: CError,
+    money: CError,
+    buy_shop: CError,
+    private_ids: CError,
+  });
 
-		})
+  const itemValidation = React.useCallback(
+    (item: TFromDateProps) => {
+      async function logic() {}
 
-	},[itemError]);
+      setStatus("validating");
+      logic()
+        .then(() => {
+          setStatus("done");
+        })
+        .catch(() => {});
+    },
+    [itemError]
+  );
 
-	
+  const roomValidation = React.useCallback((inputRoom: TFormRoomProps) => {
+    // ルームの入力情報をバリデーション
+    async function run() {}
 
-	const requiredValidation = ( value : string , key : string ) => {
-		if (value == '') {
-			itemError[key] = { isError :  true , message : `${errorMessageEnum[key]}は必須項目です。`}
-			const newObj = { key : { isError :  true , message : `${errorMessageEnum[key]}は必須項目です。`}}
-			setItemError({...itemError, ...newObj});
-		}
-	};
+    setStatus("validating");
+    run()
+      .then(() => {
+        setStatus("done");
+      })
+      .catch(() => {});
+  }, []);
 
-	const numberValidation = (value : any , key : string) => {
-		if (isNaN(value)) {
-			itemError[key] = { isError :  true , message : `${errorMessageEnum[key]}は数値のみです。`}
-			const newObj = { key : { isError :  true , message : `${errorMessageEnum[key]}は数値のみです。`}}
-			setItemError({...itemError, ...newObj});
-		} 
-	} 
+  const requiredValidation = (value: string, key: string) => {
+    if (value == "") {
+      itemError[key] = {
+        isError: true,
+        message: `${errorMessageEnum[key]}は必須項目です。`,
+      };
+      const newObj = {
+        key: {
+          isError: true,
+          message: `${errorMessageEnum[key]}は必須項目です。`,
+        },
+      };
+      setItemError({ ...itemError, ...newObj });
+    }
+  };
 
+  const numberValidation = (value: any, key: string) => {
+    if (isNaN(value)) {
+      itemError[key] = {
+        isError: true,
+        message: `${errorMessageEnum[key]}は数値のみです。`,
+      };
+      const newObj = {
+        key: {
+          isError: true,
+          message: `${errorMessageEnum[key]}は数値のみです。`,
+        },
+      };
+      setItemError({ ...itemError, ...newObj });
+    }
+  };
 
-	return {
-		requiredValidation,
-		itemError,
-		numberValidation,
-		itemValidation,
-		status
-	}
+  return {
+    requiredValidation,
+    itemError,
+    numberValidation,
+    itemValidation,
+    roomValidation,
+    status,
+  };
 }
