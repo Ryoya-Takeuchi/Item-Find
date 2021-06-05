@@ -12,10 +12,11 @@ interface Props {
 	value? : string,
 	placeholder? : string,
 	type : string
+	enabled : boolean
 }
 
 export default function PickerSelect(props : Props) {
-	const {items , onChange , value , placeholder, type} = props
+	const {items , onChange , value , placeholder, type, enabled} = props
 
 	return (
 		<Picker
@@ -24,6 +25,7 @@ export default function PickerSelect(props : Props) {
 			iosIcon={<Icon name="chevron-down" />}
 			placeholder={placeholder}
 			selectedValue={value}
+			enabled={enabled}
 			onValueChange={(value) => onChange(value,type)}
 		>
 			{items.map((item) => <Picker.Item label={item.label} value={item.value} />)}

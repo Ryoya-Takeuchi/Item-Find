@@ -49,26 +49,26 @@ const styles = StyleSheet.create({
     width: imageWidth,
     height: imageWidth,
   },
-  image_unset : {
-	position : 'absolute',
-	top : -10,
-	right : -10,
-	width : imageNumberWidth,
-	height : imageNumberWidth,
-	borderRadius : imageNumberWidth,
-	zIndex : 1,
-	backgroundColor : '#CE6C6C',
-	alignItems : 'center',
-	justifyContent : 'center'
-  }
+  image_unset: {
+    position: "absolute",
+    top: -10,
+    right: -10,
+    width: imageNumberWidth,
+    height: imageNumberWidth,
+    borderRadius: imageNumberWidth,
+    zIndex: 1,
+    backgroundColor: "#CE6C6C",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 interface Props {
-  photoNumber: number;
+  photoNumber?: number;
   cloudImageUrl: string | undefined;
   setValue: (index: number, imageUrl: string) => void;
   index: number;
-  imageUnSet : (index) => void;
+  imageUnSet: (index?) => void;
 }
 
 export default function (props: Props) {
@@ -95,18 +95,18 @@ export default function (props: Props) {
           {children}
         </View>
         {imgModeSelectModal()}
-		{cloudImageUrl && (
-			<View style={styles.image_unset}>
-				<Icon
-				onPress={() => {
-					imageUnSet(index);
-				}}
-				type="AntDesign"
-				name="close"
-				style={{ fontSize: window.width / 25, color: "#ffffff" }}
-				/>
-			</View>
-		)}
+        {cloudImageUrl && (
+          <View style={styles.image_unset}>
+            <Icon
+              onPress={() => {
+                imageUnSet(index);
+              }}
+              type="AntDesign"
+              name="close"
+              style={{ fontSize: window.width / 25, color: "#ffffff" }}
+            />
+          </View>
+        )}
       </View>
     );
   };
