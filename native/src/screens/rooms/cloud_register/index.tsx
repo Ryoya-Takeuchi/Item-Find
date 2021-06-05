@@ -7,15 +7,19 @@ import useCIUploader from "../../../modules/hooks/useCIUploader";
 import { familyCode } from "../../../modules/firebase/app";
 import useRooms from "../../../modules/hooks/useRoomList";
 import { IItem } from "../../../modules/models/entities/Item";
-import { TFormRoomProps } from "../../../modules/hooks/useValidation";
-import { round } from "react-native-reanimated";
+import {
+  TFormRoomProps,
+  TFormHierarchyProps,
+} from "../../../modules/hooks/useValidation";
 
 export default () => {
   const { getParam, goBack } = useNavigation();
   const registerType = getParam("type") as "items" | "rooms";
   const registerSubType = getParam("subType") as "root" | undefined;
   const registerValue = getParam("values") as IItem | TFormRoomProps;
-  const { itemRegister, roomRegister } = useCloudRegister(familyCode);
+  const { itemRegister, roomRegister, hierarchyRegister } = useCloudRegister(
+    familyCode
+  );
   const { imgUpload } = useCIUploader(familyCode, registerType);
   const { setRooms, roomList, status } = useRooms(familyCode);
 
@@ -41,6 +45,11 @@ export default () => {
 
   // roomタイプガード
   function typeGuardIRoom(arg: any): arg is TFormRoomProps {
+    return arg !== null && typeof arg === "object";
+  }
+
+  // タイプガード
+  function typeGuardIHierarchy(arg: any): arg is TFormHierarchyProps {
     return arg !== null && typeof arg === "object";
   }
 
@@ -105,6 +114,19 @@ export default () => {
             (uri) => uri != null
           );
           imgUpload(localImgPaths, registerResult.roomId);
+          goBack();
+        }
+      };
+      run();
+    } else if ((registerType as "hierarchy") == "hierarchy") {
+      const run = async () => {
+        if (typeGuardIHierarchy(registerValue)) {
+          console.log("registerValue", registerValue);
+          const registerResult = await hierarchyRegister(registerValue);
+          if (registerResult instanceof Error) {
+            //下の画面に戻す
+            return goBack();
+          }
           goBack();
         }
       };
