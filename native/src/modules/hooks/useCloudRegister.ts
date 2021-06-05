@@ -1,7 +1,7 @@
 import * as React from "react";
 import firestore from "@react-native-firebase/firestore";
 import { IItem } from "../../modules/models/entities/Item";
-import { TFormRoomProps } from "../hooks/useValidation";
+import { TFormRoomProps, TFormHierarchyProps } from "../hooks/useValidation";
 import { v4 as uuidv4 } from "uuid";
 
 type State = "start" | "done" | "error" | "init";
@@ -14,6 +14,7 @@ interface ICloudRegisterHook {
     hierarchyId: string,
     room: TFormRoomProps
   ) => Promise<{ roomId: string } | Error>;
+  hierarchyRegister: (hierarchy: TFormHierarchyProps) => Promise<void | Error>;
 }
 
 const cloudRegister = async (
@@ -30,6 +31,18 @@ const cloudRegister = async (
     .doc(hierarchyId)
     .collection(type)
     .doc(docId)
+    .set({ ...createData });
+};
+const hierarchyClRegister = async (
+  familyCode: string,
+  hierarchyId: string,
+  createData: any
+) => {
+  await firestore()
+    .collection("home")
+    .doc(familyCode)
+    .collection("hierarchys")
+    .doc(hierarchyId)
     .set({ ...createData });
 };
 const cloudDataUpdate = async (
@@ -55,6 +68,27 @@ export default function useCloudRegister(
         const uuid = uuidv4();
         await cloudRegister("items", familyCode, hierarchyId, uuid, item);
         return { itemId: uuid };
+      } catch (error) {
+        return new Error("登録処理でエラーが発生しました。");
+      }
+    },
+    [state, setState]
+  );
+
+  const hierarchyRegister = React.useCallback(
+    async (inputHierarchy: TFormHierarchyProps) => {
+      try {
+        //storeでの管理番号生成
+        const hierarchyId = uuidv4();
+        const { hierarchy_name, order_by } = inputHierarchy;
+        const createHierarchy = {
+          id: hierarchyId,
+          create_at: firestore.Timestamp.fromDate(new Date()),
+          update_at: firestore.Timestamp.fromDate(new Date()),
+          hierarchy_name,
+          order_by,
+        };
+        await hierarchyClRegister(familyCode, hierarchyId, createHierarchy);
       } catch (error) {
         return new Error("登録処理でエラーが発生しました。");
       }
@@ -106,5 +140,6 @@ export default function useCloudRegister(
   return {
     itemRegister,
     roomRegister,
+    hierarchyRegister,
   };
 }
