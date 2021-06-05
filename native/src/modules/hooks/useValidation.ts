@@ -1,6 +1,7 @@
 import * as React from "react";
 import { IItem } from "../models/entities/Item";
 import { IRoom } from "../models/entities/Room";
+import { IHierarchy } from "../models/entities/Hierarchy";
 
 export type TFromDateProps = Partial<
   Pick<
@@ -48,6 +49,10 @@ export interface TFormErrorProps {
   hierarchy_id: IError;
   parentRoom_id: IError;
 }
+
+export type TFormHierarchyProps = Partial<
+  Pick<IHierarchy, "hierarchy_name" | "order_by">
+>;
 interface IError {
   message: string;
   isError: boolean;
@@ -72,6 +77,7 @@ interface UseValidation {
   numberValidation: (value: string, type: string) => void;
   itemValidation: (item: TFromDateProps) => void;
   roomValidation: (room: TFormRoomProps) => void;
+  hierarchyValidation: (hierarchy: TFormHierarchyProps) => void;
   status: Status;
 }
 
@@ -114,6 +120,21 @@ export default function useValidation(): UseValidation {
       .catch(() => {});
   }, []);
 
+  const hierarchyValidation = React.useCallback(
+    (inputRoom: TFormHierarchyProps) => {
+      // 階層の入力情報をバリデーション
+      async function run() {}
+
+      setStatus("validating");
+      run()
+        .then(() => {
+          setStatus("done");
+        })
+        .catch(() => {});
+    },
+    []
+  );
+
   const requiredValidation = (value: string, key: string) => {
     if (value == "") {
       itemError[key] = {
@@ -152,6 +173,7 @@ export default function useValidation(): UseValidation {
     numberValidation,
     itemValidation,
     roomValidation,
+    hierarchyValidation,
     status,
   };
 }
