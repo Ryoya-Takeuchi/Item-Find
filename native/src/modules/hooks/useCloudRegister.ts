@@ -66,7 +66,8 @@ export default function useCloudRegister(
       try {
         //storeでの管理番号
         const uuid = uuidv4();
-        await cloudRegister("items", familyCode, hierarchyId, uuid, item);
+        const createItem = { ...item, id: uuid };
+        await cloudRegister("items", familyCode, hierarchyId, uuid, createItem);
         return { itemId: uuid };
       } catch (error) {
         return new Error("登録処理でエラーが発生しました。");
