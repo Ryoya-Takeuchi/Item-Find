@@ -6,6 +6,7 @@ import { IHierarchy } from "../models/entities/Hierarchy";
 export type TFromDateProps = Partial<
   Pick<
     IItem,
+    | "id"
     | "item_name"
     | "owners"
     | "room_ids"
