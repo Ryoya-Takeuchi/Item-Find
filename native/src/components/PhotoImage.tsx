@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 import useTakePhoto from "../modules/hooks/useTakePhoto";
+import storage from "@react-native-firebase/storage";
 import { Icon } from "native-base";
 
 const window = Dimensions.get("window");
@@ -73,6 +74,7 @@ interface Props {
 
 export default function (props: Props) {
   const { photoNumber, cloudImageUrl, setValue, index, imageUnSet } = props;
+  const [storageUrl, setStorageUrl] = React.useState(undefined);
   const { imgModeSelectModal, imgModeSelectOpen } = useTakePhoto(
     index,
     setValue
@@ -111,7 +113,27 @@ export default function (props: Props) {
     );
   };
 
-  if (!cloudImageUrl) {
+  const firebaseStorageCheck = (imageUrl: string) => {
+    return /^gs:\/\/.*/.test(imageUrl);
+  };
+
+  React.useEffect(() => {
+    if (!firebaseStorageCheck(cloudImageUrl)) {
+      return setStorageUrl(cloudImageUrl);
+    }
+    try {
+      const run = async () => {
+        const ref = storage().refFromURL(cloudImageUrl);
+        const storageUrl = await ref.getDownloadURL();
+        return setStorageUrl(storageUrl);
+      };
+      run();
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, [cloudImageUrl]);
+
+  if (!cloudImageUrl || !storageUrl) {
     return (
       <PhotoFrame>
         <Icon
@@ -132,7 +154,7 @@ export default function (props: Props) {
         <Image
           style={styles.image_style}
           source={{
-            uri: cloudImageUrl,
+            uri: storageUrl,
           }}
         />
       </TouchableHighlight>
