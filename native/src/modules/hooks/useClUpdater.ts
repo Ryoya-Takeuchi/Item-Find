@@ -6,6 +6,7 @@ import { IRoom } from "../../modules/models/entities/Room";
 
 interface ClUpdaterHook {
   itemUpdate: () => void;
+  roomUpdate: () => void;
 }
 
 type Status = "init" | "done" | "error";
@@ -49,5 +50,25 @@ export default function useClUpdater(
       });
   }, [familyCode, hierarchyId, docId]);
 
-  return { itemUpdate };
+  const roomUpdate = React.useCallback(() => {
+    const run = async () => {
+      const { create_at, update_at, ...clUpdateData } = updateData as IRoom;
+      await firestore()
+        .doc(
+          `home/${familyCode}/hierarchys/${hierarchyId}/${collectionType}/${docId}`
+        )
+        .set(
+          {
+            ...clUpdateData,
+            update_at: firestore.Timestamp.fromDate(new Date()),
+          },
+          { merge: true }
+        );
+    };
+    run().then(() => {
+      setStatus("done");
+    });
+  }, [familyCode, hierarchyId, docId]);
+
+  return { itemUpdate, roomUpdate };
 }
