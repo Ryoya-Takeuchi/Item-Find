@@ -46,6 +46,7 @@ export default () => {
         routeName: Screens.APPEND_ITEM,
         key: "append_item",
         params: {
+          title: "新規登録(商品)",
           type: "item",
         },
       });
@@ -55,6 +56,9 @@ export default () => {
       navigation.navigate({
         routeName: Screens.APPEND_ROOM,
         key: "append_room",
+        params: {
+          title: "新規登録(ルーム)",
+        },
       });
       setIsVisible((bool) => !bool);
     },
@@ -138,8 +142,9 @@ export default () => {
       if (isTreeUp) {
         navigation.navigate({
           routeName: Screens.APPEND_ROOM,
-          key: "append_room",
+          key: `${info.section.hierarchy.id}-${item.id}-${index}`,
           params: {
+            // title: "更新画面(ルーム)",
             hierarchy_id: info.section.hierarchy.id,
             room_id: item.id,
             room_name: item.room_name,
@@ -148,6 +153,7 @@ export default () => {
       } else {
         navigation.navigate({
           routeName: Screens.ROOM_CHILD_TREE,
+          key: `${info.section.hierarchy.id}-${item.id}-${index}`,
           params: {
             hierarchy_id: info.section.hierarchy.id,
             room_id: item.id,
@@ -172,8 +178,9 @@ export default () => {
       if (isTreeUp) {
         navigation.navigate({
           routeName: Screens.APPEND_ITEM,
-          key: "append_item",
+          key: `${info.section.hierarchy.id}-${item.id}-${index}`,
           params: {
+            // title: "更新画面(商品)",
             type: "item",
             hierarchy_id: info.section.hierarchy.id,
             item_id: item.id,
@@ -183,6 +190,7 @@ export default () => {
       } else {
         navigation.navigate({
           routeName: Screens.ROOM_ITEM_INFO,
+          key: `${info.section.hierarchy.id}-${item.id}-${index}`,
           params: {
             hierarchy_id: info.section.hierarchy.id,
             room_id: item.id,
