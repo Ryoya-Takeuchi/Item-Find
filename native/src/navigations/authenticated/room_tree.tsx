@@ -5,12 +5,13 @@ import { NavigationStackScreenProps } from "react-navigation-stack";
 import * as Screens from "../Screens";
 
 // screens
-import RoomTree from "../../screens/rooms/tree";
-import AppendRoom from "../..//screens/rooms/append_room";
-import AppendItem from "../../screens/rooms/append_item";
-import ItemInfo from "../../screens/rooms/item_info";
-import CloudRegister from "../../screens/rooms/cloud_register";
-import CloudUpdater from "../../screens/rooms/cloud_update";
+// import RoomTree from "../../screens/rooms/tree";
+import RoomTree from "src/screens/rooms/tree/index";
+import AppendRoom from "src/screens/rooms/append_room";
+import AppendItem from "src/screens/rooms/append_item";
+import ItemInfo from "src/screens/rooms/item_info";
+import CloudRegister from "src/screens/rooms/cloud_register";
+import CloudUpdater from "src/screens/rooms/cloud_update";
 
 const headerStyle = {
   backgroundColor: "#7863D3",
@@ -21,12 +22,6 @@ const headerTintColor = "#F5F5F5";
  * room tree container
  */
 const roomTreeContainer: NavigationRouteConfigMap<any, any> = {};
-
-const buttonComp = (text: string, onPress: () => void) => (
-  <Button transparent onPress={onPress}>
-    <Text style={{ color: headerTintColor }}>{text}</Text>
-  </Button>
-);
 
 interface treeUpNavigationOptionsParams {
   onTreeUp: () => void;
@@ -78,19 +73,32 @@ roomTreeContainer[Screens.ROOM_ITEM_INFO] = {
   }),
 };
 
+interface IAppendRoomNavigationOption {
+  title;
+}
+
 roomTreeContainer[Screens.APPEND_ROOM] = {
   screen: AppendRoom,
-  navigationOptions: () => ({
-    title: "新規登録(ルーム)",
-    headerStyle,
-    headerTintColor,
+  navigationOptions: ({
+    navigation,
+  }: NavigationStackScreenProps<IAppendRoomNavigationOption>) => ({
+    // title: navigation.state.params.title
+    //   ? navigation.state.params.title
+    //   : "新規登録(ルーム)",
+    // headerStyle,
+    // headerTintColor,
+    header: null,
   }),
 };
 
 roomTreeContainer[Screens.APPEND_ITEM] = {
   screen: AppendItem,
-  navigationOptions: () => ({
-    title: "新規登録(商品)",
+  navigationOptions: ({
+    navigation,
+  }: NavigationStackScreenProps<IAppendRoomNavigationOption>) => ({
+    title: navigation.state.params.title
+      ? navigation.state.params.title
+      : "新規登録(商品)",
     headerStyle,
     headerTintColor,
   }),
