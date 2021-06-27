@@ -6,7 +6,6 @@ import useClUpdater from "../../../modules/hooks/useClUpdater";
 import useCIUploader from "../../../modules/hooks/useCIUploader";
 import { IItem } from "../../../modules/models/entities/Item";
 import { IRoom } from "../../../modules/models/entities/Room";
-import { IHierarchy } from "../../../modules/models/entities/Hierarchy";
 
 type TCollectionType = "items" | "rooms" | "hierarchys";
 
@@ -19,15 +18,13 @@ export default () => {
   const updateValue = getParam("value");
 
   const { status, imgUpload } = useCIUploader(familyCode, collectionType);
-  const { itemUpdate } = useClUpdater(
+  const { itemUpdate, roomUpdate } = useClUpdater(
     familyCode,
     hierarchyId,
     collectionType,
     uuid,
     updateValue
   );
-
-  console.log("updateに飛んでいる");
 
   React.useEffect(() => {
     if (status == "done") {
@@ -49,6 +46,16 @@ export default () => {
           (imgUrl) => imgUrl != null
         );
         imgUpload(ImgUrls, uuid);
+      }
+
+      if (typeGuard<IRoom>(updateValue) && collectionType == "rooms") {
+        await roomUpdate();
+        const ImgUrls = updateValue.image_exetensions.filter(
+          (imgUrl) => imgUrl != null
+        );
+        if (ImgUrls.length > 0) {
+          imgUpload(ImgUrls, uuid);
+        }
       }
     };
     fn();

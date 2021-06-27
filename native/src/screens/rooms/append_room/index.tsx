@@ -1,6 +1,7 @@
 import * as React from "react";
 import { View } from "react-native";
-import { Container, Tab, Tabs, ScrollableTab } from "native-base";
+import firestore from "@react-native-firebase/firestore";
+import { Container, Tab, Tabs, ScrollableTab, Icon } from "native-base";
 import { List, ListItem, Text, Input, Form, Item, Button } from "native-base";
 import styles from "./styles";
 import useRooms from "../../../modules/hooks/useForSelectRooms";
@@ -15,8 +16,10 @@ import useValidation, {
 import useForSelectDomain from "../../../modules/hooks/useForSelectHierarchys";
 import { useNavigation } from "react-navigation-hooks";
 import * as Screens from "../../../navigations/Screens";
+import { IRoom } from "src/modules/models/entities/Room";
 
 const initRoom: TFormRoomProps = {
+  id: undefined,
   room_name: "",
   is_root: false,
   private_ids: "all",
@@ -47,41 +50,81 @@ export default () => {
   const { run, selectHierarchies } = useForSelectDomain();
   const { roomValidation, hierarchyValidation, status } = useValidation();
   const { getAllRoom, roomList } = useRooms(familyCode);
-  const { navigate } = useNavigation();
+  const { navigate, getParam } = useNavigation();
+  const hierarchyId = getParam("hierarchy_id");
+  const roomId = getParam("room_id");
 
   React.useEffect(() => {
     run();
     getAllRoom();
+    // 更新処理
+    const fn = async () => {
+      const snapshots = await firestore()
+        .doc(`home/${familyCode}/hierarchys/${hierarchyId}/rooms/${roomId}`)
+        .get();
+      const {
+        room_name,
+        img_refFromURLs,
+        id,
+        is_root,
+        room_ids,
+        private_ids,
+      } = snapshots.data() as IRoom;
+      console.log("snapshots", snapshots.data());
+      if (is_root) {
+        setInputRoom((room) => ({
+          ...room,
+          room_name,
+          id,
+          hierarchy_id: hierarchyId,
+          image_exetensions: img_refFromURLs,
+          private_ids,
+          is_root,
+        }));
+      }
+    };
+    fn();
   }, []);
 
   React.useEffect(() => {
     if (status == "done") {
-      if (navigationType == "room") {
-        let subType = undefined;
-        if (inputRoom.parentRoom_id == "") {
-          subType = "root";
-        }
+      let subType = undefined;
+      if (inputRoom.parentRoom_id == "") {
+        subType = "root";
+      }
+      if (roomId == null) {
         navigate({
           routeName: Screens.CLOUD_REGISTER,
-          key: "cloud_register",
+          key: `${hierarchyId}-${roomId}`,
           params: {
             type: "rooms",
             subType: subType,
             values: inputRoom,
           },
         });
-      } else if (navigationType == "hierarchy") {
-        console.log("navigationType", navigationType);
+      } else {
         navigate({
-          routeName: Screens.CLOUD_REGISTER,
-          key: "cloud_register",
+          routeName: Screens.CLOUD_UPDATER,
+          key: `${hierarchyId}-${roomId}`,
           params: {
-            type: "hierarchy",
-            subType: undefined,
-            values: inputHierarchy,
+            familyCode,
+            hierarchyId,
+            uuid: inputRoom.id,
+            collectionType: "rooms",
+            value: inputRoom,
           },
         });
       }
+    } else if (status == "done") {
+      navigate({
+        routeName: Screens.CLOUD_REGISTER,
+        key: "cloud_register",
+        params: {
+          type: "hierarchy",
+          subType: undefined,
+          values: inputHierarchy,
+        },
+      });
     } else if (status == "error") {
     }
   }, [status]);
@@ -169,6 +212,7 @@ export default () => {
       navigationType = "hierarchy";
     }
   };
+
   return (
     <Container>
       <Tabs
@@ -180,13 +224,15 @@ export default () => {
         <Tab heading="ルーム追加">
           <View style={styles.wrap_area}>
             <View style={styles.photo_area}>
-              <PhotoImage
-                photoNumber={1}
-                cloudImageUrl={inputRoom.image_exetensions[0]}
-                imageUnSet={() => imageUnSet(0)}
-                index={0}
-                setValue={setImage}
-              />
+              {inputRoom.image_exetensions.map((url, index) => (
+                <PhotoImage
+                  photoNumber={1}
+                  cloudImageUrl={inputRoom.image_exetensions[index]}
+                  imageUnSet={() => imageUnSet(0)}
+                  index={0}
+                  setValue={setImage}
+                />
+              ))}
               {/* <Icon type="AntDesign" name="camera" style={{fontSize : window.width / 3, color: '#E2E2E2'}}/> */}
             </View>
             <View style={styles.form_area}>
@@ -268,7 +314,7 @@ export default () => {
                       onPress={() => setCloudRegister("room")}
                       style={styles.button_success_color}
                     >
-                      <Text> 登 録 </Text>
+                      <Text>{hierarchyId ? " 更 新 " : " 登 録 "}</Text>
                     </Button>
                   </ListItem>
                 </List>
@@ -329,7 +375,7 @@ export default () => {
                       onPress={() => setCloudRegister("hierarchy")}
                       style={styles.button_success_color}
                     >
-                      <Text> 登 録 </Text>
+                      <Text>{hierarchyId ? " 更 新 " : " 登 録 "}</Text>
                     </Button>
                   </ListItem>
                 </List>
