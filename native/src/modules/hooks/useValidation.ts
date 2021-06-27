@@ -29,6 +29,7 @@ export interface TFromErrorProps {
 export type TFormRoomProps = Partial<
   Pick<
     IRoom,
+	| "id"
     | "room_name"
     | "is_root"
     | "private_ids"
